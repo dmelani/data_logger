@@ -46,7 +46,7 @@ type Adxl345 struct {
 	address uint8
 }
 
-func NewAdxl345(address uint8, device int) (*Adxl345, error) {
+func NewAdxl345(address uint8, device int) (Device, error) {
 	adxl := Adxl345{
 		device:  device,
 		address: address,
@@ -72,4 +72,7 @@ func (adxl *Adxl345) Init() {
 	if data[0] != deviceID {
 		log.Fatalf("ADXL345 at %x on bus %d returned wrong device id: %x\n", adxl.address, adxl.device, data[0])
 	}
+}
+
+func (adxl *Adxl345) Destroy() {
 }

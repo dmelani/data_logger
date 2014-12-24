@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	adxl, err := devices.NewAdxl345(0x53, 1)
+	adxl, err := devices.Devices["adxl345"](0x53, 1)
 	if err != nil {
 		log.Fatal(err)
 	}
