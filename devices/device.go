@@ -1,4 +1,4 @@
-package main
+package devices
 
 type Device interface {
 	Init()

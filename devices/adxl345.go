@@ -1,4 +1,4 @@
-package main
+package devices
 
 import (
 	i2c "github.com/davecheney/i2c"
@@ -38,6 +38,8 @@ const (
 	regFifoStatus    = 0x39
 )
 
+const deviceID byte = 0xE5
+
 type Adxl345 struct {
 	bus     *i2c.I2C
 	device  int
@@ -60,5 +62,14 @@ func NewAdxl345(address uint8, device int) (*Adxl345, error) {
 	return &adxl, nil
 }
 
-func (adxl Adxl345) Init() {
+func (adxl *Adxl345) Init() {
+	data := []byte{0}
+
+	adxl.bus.WriteByte(regDevid)
+	adxl.bus.Read(data)
+	log.Println(data)
+
+	if data[0] != deviceID {
+		log.Fatalf("ADXL345 at %x on bus %d returned wrong device id: %x\n", adxl.address, adxl.device, data[0])
+	}
 }
