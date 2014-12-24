@@ -1,8 +1,12 @@
 package devices
 
 import (
+	"errors"
+	"fmt"
 	i2c "github.com/davecheney/i2c"
 	"log"
+	"encoding/binary"
+	"bytes"
 )
 
 const (
@@ -38,6 +42,17 @@ const (
 	regFifoStatus    = 0x39
 )
 
+const (
+	powerCtl8Hz       byte = 0x00
+	powerCtl4Hz       byte = 0x01
+	powerCtl2Hz       byte = 0x02
+	powerCtl1Hz       byte = 0x03
+	powerCtlSleep     byte = 0x04
+	powerCtlMeasure   byte = 0x08
+	powerCtlAutoSleep byte = 0x0a
+	powerCtlLink      byte = 0x10
+)
+
 const deviceID byte = 0xE5
 
 type Adxl345 struct {
@@ -63,16 +78,48 @@ func NewAdxl345(address uint8, device int) (Device, error) {
 }
 
 func (adxl *Adxl345) Init() {
+	if err := adxl.checkDevID(); err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	adxl.setPowerCtl(powerCtlMeasure)
+}
+
+func (adxl *Adxl345) Destroy() {
+}
+
+func (adxl *Adxl345) Read() string {
+	data := make([]byte, 6, 6)
+	var xReg int16
+	var yReg int16
+	var zReg int16
+
+	adxl.bus.WriteByte(regDataX0)
+	adxl.bus.Read(data)
+
+	buf := bytes.NewBuffer(data)
+	binary.Read(buf, binary.LittleEndian, &xReg)
+	binary.Read(buf, binary.LittleEndian, &yReg)
+	binary.Read(buf, binary.LittleEndian, &zReg)
+
+	return fmt.Sprintf("x:%d y:%d z:%d", xReg, yReg, zReg)
+}
+
+func (adxl *Adxl345) checkDevID() error {
 	data := []byte{0}
 
 	adxl.bus.WriteByte(regDevid)
 	adxl.bus.Read(data)
-	log.Println(data)
 
 	if data[0] != deviceID {
-		log.Fatalf("ADXL345 at %x on bus %d returned wrong device id: %x\n", adxl.address, adxl.device, data[0])
+		errors.New(fmt.Sprintf("ADXL345 at %x on bus %d returned wrong device id: %x\n", adxl.address, adxl.device, data[0]))
 	}
+
+	return nil
 }
 
-func (adxl *Adxl345) Destroy() {
+func (adxl *Adxl345) setPowerCtl(flags byte) {
+	data := []byte{regPowerCtl, flags}
+
+	adxl.bus.Write(data)
 }

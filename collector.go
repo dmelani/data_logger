@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/dmelani/telemetry_collector/devices"
 	"log"
+	"fmt"
 )
 
 func main() {
@@ -12,5 +13,7 @@ func main() {
 	}
 	log.Print(adxl)
 	adxl.Init()
+	for {
+		fmt.Println(adxl.Read())
+	}
 }
-
