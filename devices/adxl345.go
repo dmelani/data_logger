@@ -80,6 +80,8 @@ const (
 
 const deviceID byte = 0xE5
 
+const fullResolutionScaleFactor int32 = 4
+
 type Adxl345 struct {
 	bus     *i2c.I2C
 	device  int
@@ -108,14 +110,14 @@ func (adxl *Adxl345) Init() {
 	}
 
 	adxl.setRegister(regDataFormat, dataFormatRange16g|dataFormatFullRes)
-	adxl.setRegister(regBWRate, bwRate3200)
+	adxl.setRegister(regBWRate, bwRate400)
 	adxl.setRegister(regPowerCtl, powerCtlMeasure)
 }
 
 func (adxl *Adxl345) Destroy() {
 }
 
-func (adxl *Adxl345) Read() string {
+func (adxl *Adxl345) Read() Measurement {
 	data := make([]byte, 6, 6)
 	var xReg int16
 	var yReg int16
@@ -129,7 +131,12 @@ func (adxl *Adxl345) Read() string {
 	binary.Read(buf, binary.LittleEndian, &yReg)
 	binary.Read(buf, binary.LittleEndian, &zReg)
 
-	return fmt.Sprintf("x:%d y:%d z:%d", xReg, yReg, zReg)
+	ret := &Acceleration{}
+	ret.data[0] = int32(xReg) * fullResolutionScaleFactor
+	ret.data[1] = int32(yReg) * fullResolutionScaleFactor
+	ret.data[2] = int32(zReg) * fullResolutionScaleFactor
+
+	return ret
 }
 
 func (adxl *Adxl345) checkDevID() error {

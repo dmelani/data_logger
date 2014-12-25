@@ -14,6 +14,21 @@ func main() {
 	log.Print(adxl)
 	adxl.Init()
 	for {
-		fmt.Println(adxl.Read())
+		//var measurement devices.Measurement = adxl.Read()
+		//measurement := adxl.Read()
+		//fmt.Println("derp: ", reflect.TypeOf(measurement))
+		measurement := adxl.Read()
+		switch measurement := measurement.(type) {
+		case *devices.Acceleration:
+			derp := measurement.Value()
+			values := derp.([3]int32)
+			fmt.Println("Acc! ", values[0], values[1], values[2])
+		case *devices.MagneticField:
+			fmt.Println("Mag field!")
+		case *devices.Gyro:
+			fmt.Println("Gyro!")
+		default:
+			fmt.Println("Unknown type")
+		}
 	}
 }

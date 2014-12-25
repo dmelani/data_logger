@@ -3,7 +3,7 @@ package devices
 type Device interface {
 	Init()
 	Destroy()
-	Read() string
+	Read() Measurement
 }
 
 var Devices = map[string]func(uint8, int) (Device, error){
