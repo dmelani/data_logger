@@ -1,12 +1,12 @@
 package devices
 
 import (
+	"bytes"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	i2c "github.com/davecheney/i2c"
 	"log"
-	"encoding/binary"
-	"bytes"
 )
 
 const (
@@ -49,8 +49,20 @@ const (
 	powerCtl1Hz       byte = 0x03
 	powerCtlSleep     byte = 0x04
 	powerCtlMeasure   byte = 0x08
-	powerCtlAutoSleep byte = 0x0a
-	powerCtlLink      byte = 0x10
+	powerCtlAutoSleep byte = 0x10
+	powerCtlLink      byte = 0x20
+)
+
+const (
+	dataFormatRange2g   byte = 0x00
+	dataFormatRange4g   byte = 0x01
+	dataFormatRange8g   byte = 0x02
+	dataFormatRange16g  byte = 0x03
+	dataFormatJustify   byte = 0x04
+	dataFormatFullRes   byte = 0x08
+	dataFormatIntInvert byte = 0x20
+	dataFormatSpi       byte = 0x40
+	dataFormatSelfTest  byte = 0x80
 )
 
 const deviceID byte = 0xE5
@@ -82,7 +94,8 @@ func (adxl *Adxl345) Init() {
 		log.Fatalf(err.Error())
 	}
 
-	adxl.setPowerCtl(powerCtlMeasure)
+	adxl.setRegister(regDataFormat, dataFormatRange16g|dataFormatFullRes)
+	adxl.setRegister(regPowerCtl, powerCtlMeasure)
 }
 
 func (adxl *Adxl345) Destroy() {
@@ -118,8 +131,8 @@ func (adxl *Adxl345) checkDevID() error {
 	return nil
 }
 
-func (adxl *Adxl345) setPowerCtl(flags byte) {
-	data := []byte{regPowerCtl, flags}
+func (adxl *Adxl345) setRegister(register byte, flags byte) {
+	data := []byte{register, flags}
 
 	adxl.bus.Write(data)
 }
