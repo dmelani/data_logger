@@ -65,6 +65,19 @@ const (
 	dataFormatSelfTest  byte = 0x80
 )
 
+const (
+	bwRate6_25 byte = 0x06
+	bwRate12_5 byte = 0x07
+	bwRate25   byte = 0x08
+	bwRate50   byte = 0x09
+	bwRate100  byte = 0x0a
+	bwRate200  byte = 0x0b
+	bwRate400  byte = 0x0c
+	bwRate800  byte = 0x0d
+	bwRate1600 byte = 0x0e
+	bwRate3200 byte = 0x0f
+)
+
 const deviceID byte = 0xE5
 
 type Adxl345 struct {
@@ -95,6 +108,7 @@ func (adxl *Adxl345) Init() {
 	}
 
 	adxl.setRegister(regDataFormat, dataFormatRange16g|dataFormatFullRes)
+	adxl.setRegister(regBWRate, bwRate3200)
 	adxl.setRegister(regPowerCtl, powerCtlMeasure)
 }
 
