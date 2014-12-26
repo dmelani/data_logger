@@ -80,7 +80,7 @@ const (
 
 const deviceID byte = 0xE5
 
-const fullResolutionScaleFactor int32 = 4
+const fullResolutionScaleFactor float32 = 3.9
 
 type Adxl345 struct {
 	bus     *i2c.I2C
@@ -132,9 +132,9 @@ func (adxl *Adxl345) Read() Measurement {
 	binary.Read(buf, binary.LittleEndian, &zReg)
 
 	ret := &Acceleration{}
-	ret.data[0] = int32(xReg) * fullResolutionScaleFactor
-	ret.data[1] = int32(yReg) * fullResolutionScaleFactor
-	ret.data[2] = int32(zReg) * fullResolutionScaleFactor
+	ret.data[0] = int32(float32(xReg) * fullResolutionScaleFactor)
+	ret.data[1] = int32(float32(yReg) * fullResolutionScaleFactor)
+	ret.data[2] = int32(float32(zReg) * fullResolutionScaleFactor)
 
 	return ret
 }
