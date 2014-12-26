@@ -14,9 +14,6 @@ func main() {
 	log.Print(adxl)
 	adxl.Init()
 	for {
-		//var measurement devices.Measurement = adxl.Read()
-		//measurement := adxl.Read()
-		//fmt.Println("derp: ", reflect.TypeOf(measurement))
 		measurement := adxl.Read()
 		switch measurement := measurement.(type) {
 		case *devices.Acceleration:
