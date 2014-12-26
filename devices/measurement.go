@@ -30,7 +30,7 @@ func (mf *MagneticField) Value() interface{} {
  * Gyroscope
  */
 type Gyro struct {
-	data [3]float64 /* millidegrees/s */
+	data [3]float32 /* millidegrees/s */
 }
 
 func (g *Gyro) Value() interface{} {
