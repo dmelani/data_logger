@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/dmelani/telemetry_collector/devices"
+	"github.com/dmelani/data_logger/devices"
 	"log"
 	"fmt"
 )
@@ -11,10 +11,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Print(adxl)
+	itg, err := devices.Devices["itg3200"](0x68, 1)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	adxl.Init()
+	itg.Init()
+
 	for {
-		measurement := adxl.Read()
+		measurement := itg.Read()
 		switch measurement := measurement.(type) {
 		case *devices.Acceleration:
 			derp := measurement.Value()
@@ -23,7 +29,9 @@ func main() {
 		case *devices.MagneticField:
 			fmt.Println("Mag field!")
 		case *devices.Gyro:
-			fmt.Println("Gyro!")
+			derp := measurement.Value()
+			values := derp.([3]float32)
+			fmt.Println("Gyro! ", values[0], values[1], values[2])
 		default:
 			fmt.Println("Unknown type")
 		}

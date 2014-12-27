@@ -100,7 +100,6 @@ func NewAdxl345(address uint8, device int) (Device, error) {
 	}
 
 	adxl.bus = bus
-	log.Println(adxl.bus)
 	return &adxl, nil
 }
 
