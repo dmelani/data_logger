@@ -7,6 +7,7 @@ import (
 	"fmt"
 	i2c "github.com/davecheney/i2c"
 	"log"
+	"time"
 )
 
 const (
@@ -78,6 +79,10 @@ func (itg *Itg3200) Init() {
 	if err := itg.checkWhoAmI(); err != nil {
 		log.Fatal(err.Error())
 	}
+
+	itg.setRegister(regPwrMgm, pwrMgmHReset)
+	itg.setRegister(regDlpfFs, dlpfFsFullScale)
+	time.Sleep(50 * time.Millisecond) /* Give gyro time to settle */
 
 	itg.setRegister(regDlpfFs, dlpfFsFullScale|dlpfCfg10Hz)
 	itg.setRegister(regPwrMgm, pwrMgmClkSelXGyroRef)
