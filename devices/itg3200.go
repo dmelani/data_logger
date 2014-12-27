@@ -53,6 +53,7 @@ const (
 )
 
 const whoAmIMask = 0x7e
+const measurementScaleFactor float32 = 1000.0 / 14.375
 
 type Itg3200 struct {
 	bus     *i2c.I2C
@@ -84,7 +85,7 @@ func (itg *Itg3200) Init() {
 	itg.setRegister(regDlpfFs, dlpfFsFullScale)
 	time.Sleep(50 * time.Millisecond) /* Give gyro time to settle */
 
-	itg.setRegister(regDlpfFs, dlpfFsFullScale|dlpfCfg10Hz)
+	itg.setRegister(regDlpfFs, dlpfFsFullScale|dlpfCfg5Hz)
 	itg.setRegister(regPwrMgm, pwrMgmClkSelXGyroRef)
 }
 
@@ -123,9 +124,9 @@ func (itg *Itg3200) Read() Measurement {
 	tempC := 35 + float32(tempReg+13200)/280 // does this really make sense?
 	fmt.Println("Gyro temp:", tempC)
 	ret := &Gyro{}
-	ret.data[0] = float32(xReg)
-	ret.data[1] = float32(yReg)
-	ret.data[2] = float32(zReg)
+	ret.data[0] = int32(float32(xReg) * measurementScaleFactor)
+	ret.data[1] = int32(float32(yReg) * measurementScaleFactor)
+	ret.data[2] = int32(float32(zReg) * measurementScaleFactor)
 
 	return ret
 }

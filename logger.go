@@ -30,8 +30,8 @@ func main() {
 			fmt.Println("Mag field!")
 		case *devices.Gyro:
 			derp := measurement.Value()
-			values := derp.([3]float32)
-			fmt.Println("Gyro! ", values[0], values[1], values[2])
+			values := derp.([3]int32)
+			fmt.Println("Gyro! ", float32(values[0])/1000.0, float32(values[1])/1000.0, float32(values[2])/1000.0)
 		default:
 			fmt.Println("Unknown type")
 		}
