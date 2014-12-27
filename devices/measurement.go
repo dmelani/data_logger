@@ -19,7 +19,7 @@ func (a *Acceleration) Value() interface{} {
  * Magnetic Field
  */
 type MagneticField struct {
-	data [3]float64 /* milligauss */
+	data [3]int32 /* milligauss */
 }
 
 func (mf *MagneticField) Value() interface{} {
