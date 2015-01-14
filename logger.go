@@ -4,9 +4,34 @@ import (
 	"github.com/dmelani/data_logger/devices"
 	"log"
 	"fmt"
+	"gopkg.in/yaml.v2"
+	"os"
+	"io/ioutil"
 )
 
+type Config struct {
+	Sensors []struct {
+		Name string
+		Type string
+	}
+}
+
 func main() {
+	configFile := os.Args[1]
+	cfg := Config{}
+
+	configData, err := ioutil.ReadFile(configFile);
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = yaml.Unmarshal(configData, &cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(cfg)
+
 	adxl, err := devices.Devices["adxl345"](0x53, 1)
 	if err != nil {
 		log.Fatal(err)

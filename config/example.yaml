@@ -1,0 +1,10 @@
+---
+sensors:
+        - name: accelerometer
+          type: adxl345
+
+        - name: magnetic field sensor
+          type: hmc5883l
+
+        - name: gyroscope
+          type: itg3200
