@@ -24,3 +24,5 @@ I still have to implement at least the following:
 - Temperature compensation for itg32000
 - An entity that collects data an calculates current heading and lean angle
 - A logging framework that collects and logs data
+
+Look at this document for hints on how calibration of hmc5883l should be done http://www.joics.com/publishedpapers/2013_10_6_1551_1558.pdf
