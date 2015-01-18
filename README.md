@@ -28,3 +28,5 @@ Look at this document for hints on how calibration of hmc5883l should be done ht
 For error correction in itg3200, look at this http://mathworld.wolfram.com/LeastSquaresFitting.html and http://en.wikipedia.org/wiki/Errors-in-variables_models
 
 Might want to try out a PID controller too even it if is not direclty relevant to this project at the moment: https://github.com/felixge/pidctrl and http://en.wikipedia.org/wiki/PID_controller
+
+For info on developing the IMU part: http://www.starlino.com/imu_guide.html
