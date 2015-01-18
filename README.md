@@ -31,3 +31,4 @@ Might want to try out a PID controller too even it if is not direclty relevant t
 
 For info on developing the IMU part: http://www.starlino.com/imu_guide.html
 This might also help: http://stackoverflow.com/questions/1586658/combine-gyroscope-and-accelerometer-data
+And this for Kalman filters and IMU: http://www.instructables.com/id/Guide-to-gyro-and-accelerometer-with-Arduino-inclu/
