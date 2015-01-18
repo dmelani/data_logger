@@ -30,3 +30,4 @@ For error correction in itg3200, look at this http://mathworld.wolfram.com/Least
 Might want to try out a PID controller too even it if is not direclty relevant to this project at the moment: https://github.com/felixge/pidctrl and http://en.wikipedia.org/wiki/PID_controller
 
 For info on developing the IMU part: http://www.starlino.com/imu_guide.html
+This might also help: http://stackoverflow.com/questions/1586658/combine-gyroscope-and-accelerometer-data
