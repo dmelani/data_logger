@@ -2,9 +2,15 @@
 sensors:
         - name: accelerometer
           type: adxl345
+          bus: 1
+          address: 0x53
 
         - name: magnetic field sensor
           type: hmc5883l
+          bus: 1
+          address: 0x1E
 
         - name: gyroscope
           type: itg3200
+          bus: 1
+          address: 0x68

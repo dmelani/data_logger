@@ -13,6 +13,25 @@ type Config struct {
 	Sensors []struct {
 		Name string
 		Type string
+		Bus int
+		Port int
+	}
+}
+
+func setupDevices(config Config) (r []devices.Devices) {
+	for _, e := range config.Sensors {
+		log.Println(e)
+		dev, err := devices.Devices[e.Type](e.Port, e.Bus)
+		if err != nil {
+			log.Fatal(err)
+		}
+		append(r, dev)
+	}
+}
+
+func initDevices(devices []devices.Devices) {
+	for _, e := range devices {
+		e.Init()
 	}
 }
 
@@ -32,25 +51,11 @@ func main() {
 
 	fmt.Println(cfg)
 
-	adxl, err := devices.Devices["adxl345"](0x53, 1)
-	if err != nil {
-		log.Fatal(err)
-	}
-	itg, err := devices.Devices["itg3200"](0x68, 1)
-	if err != nil {
-		log.Fatal(err)
-	}
-	hmc, err := devices.Devices["hmc5883l"](0x1E, 1)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	adxl.Init()
-	itg.Init()
-	hmc.Init()
+	devices := setupDevices(cfg)
+	initDevices(devices)
 
 	for {
-		measurement := hmc.Read()
+		measurement := itg.Read()
 		switch measurement := measurement.(type) {
 		case *devices.Acceleration:
 			derp := measurement.Value()
