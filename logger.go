@@ -14,22 +14,24 @@ type Config struct {
 		Name string
 		Type string
 		Bus int
-		Port int
+		Address uint8
 	}
 }
 
-func setupDevices(config Config) (r []devices.Devices) {
+func setupDevices(config Config) (r []devices.Device) {
 	for _, e := range config.Sensors {
 		log.Println(e)
-		dev, err := devices.Devices[e.Type](e.Port, e.Bus)
+		dev, err := devices.Devices[e.Type](e.Address, e.Bus)
 		if err != nil {
 			log.Fatal(err)
 		}
-		append(r, dev)
+		r = append(r, dev)
 	}
+
+	return r
 }
 
-func initDevices(devices []devices.Devices) {
+func initDevices(devices []devices.Device) {
 	for _, e := range devices {
 		e.Init()
 	}
@@ -51,26 +53,28 @@ func main() {
 
 	fmt.Println(cfg)
 
-	devices := setupDevices(cfg)
-	initDevices(devices)
+	devs := setupDevices(cfg)
+	initDevices(devs)
 
 	for {
-		measurement := itg.Read()
-		switch measurement := measurement.(type) {
-		case *devices.Acceleration:
-			derp := measurement.Value()
-			values := derp.([3]int32)
-			fmt.Println("Acc:", float32(values[0])/1000.0, float32(values[1])/1000.0, float32(values[2])/1000.0)
-		case *devices.MagneticField:
-			derp := measurement.Value()
-			values := derp.([3]int32)
-			fmt.Println("Mag:", float32(values[0])/1000.0, float32(values[1])/1000.0, float32(values[2])/1000.0)
-		case *devices.Gyro:
-			derp := measurement.Value()
-			values := derp.([3]int32)
-			fmt.Println("Gyro:", float32(values[0])/1000.0, float32(values[1])/1000.0, float32(values[2])/1000.0)
-		default:
-			fmt.Println("Unknown type")
+		for _, device := range devs {
+			measurement := device.Read()
+			switch measurement := measurement.(type) {
+			case *devices.Acceleration:
+				derp := measurement.Value()
+				values := derp.([3]int32)
+				fmt.Println("Acc:", float32(values[0])/1000.0, float32(values[1])/1000.0, float32(values[2])/1000.0)
+			case *devices.MagneticField:
+				derp := measurement.Value()
+				values := derp.([3]int32)
+				fmt.Println("Mag:", float32(values[0])/1000.0, float32(values[1])/1000.0, float32(values[2])/1000.0)
+			case *devices.Gyro:
+				derp := measurement.Value()
+				values := derp.([3]int32)
+				fmt.Println("Gyro:", float32(values[0])/1000.0, float32(values[1])/1000.0, float32(values[2])/1000.0)
+			default:
+				fmt.Println("Unknown type")
+			}
 		}
 	}
 }
