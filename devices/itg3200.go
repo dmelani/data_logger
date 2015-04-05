@@ -121,7 +121,7 @@ func (itg *Itg3200) Read() Measurement {
 	binary.Read(buf, binary.BigEndian, &yReg)
 	binary.Read(buf, binary.BigEndian, &zReg)
 
-	tempC := 35 + float32(tempReg+13200)/280 // does this really make sense?
+	tempC := 35.0 + float32(tempReg+13200)/280.0 // does this really make sense?
 	fmt.Println("Gyro temp:", tempC)
 	ret := &Gyro{}
 	ret.data[0] = int32(float32(xReg) * measurementScaleFactor)

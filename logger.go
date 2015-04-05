@@ -40,7 +40,7 @@ func initDevices(devices []devices.Device) {
 func main() {
 	configFile := os.Args[1]
 	cfg := Config{}
-	imu := Imu{}
+	ahrs := Ahrs{}
 
 	configData, err := ioutil.ReadFile(configFile);
 	if err != nil {
@@ -60,7 +60,8 @@ func main() {
 	for {
 		for _, device := range devs {
 			measurement := device.Read()
-			imu.AddMeasurement(measurement)
+			ahrs.AddMeasurement(measurement)
+			fmt.Println("G-force:", ahrs.GforceTotal)
 		}
 	}
 }
